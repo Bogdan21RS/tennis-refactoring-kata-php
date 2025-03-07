@@ -4,10 +4,10 @@ namespace Feature;
 
 class TennisGame1 implements TennisGame
 {
-    private int $m_score1 = 0;
-    private int $m_score2 = 0;
-    private string $player1Name = '';
-    private string $player2Name = '';
+    private int $player1Score = 0;
+    private int $player2Score = 0;
+    private string $player1Name;
+    private string $player2Name;
 
     public function __construct($player1Name, $player2Name)
     {
@@ -15,69 +15,72 @@ class TennisGame1 implements TennisGame
         $this->player2Name = $player2Name;
     }
 
-    public function wonPoint($playerName): void
+    public function quantifyWinningPointForPlayer(String $playerName): void
     {
-        if ('player1' == $playerName) {
-            $this->m_score1++;
-        } else {
-            $this->m_score2++;
-        }
+        $this->isPlayerOne($playerName)
+            ? $this->player1Score++
+            : $this->player2Score++;
     }
 
-    public function getScore(): string
+    public function getGameScoreboard(): string
     {
-        $score = "";
-        if ($this->m_score1 == $this->m_score2) {
-            switch ($this->m_score1) {
+        $scoreBoard = "";
+        if ($this->player1Score == $this->player2Score) {
+            switch ($this->player1Score) {
                 case 0:
-                    $score = "Love-All";
+                    $scoreBoard = "Love-All";
                     break;
                 case 1:
-                    $score = "Fifteen-All";
+                    $scoreBoard = "Fifteen-All";
                     break;
                 case 2:
-                    $score = "Thirty-All";
+                    $scoreBoard = "Thirty-All";
                     break;
                 default:
-                    $score = "Deuce";
+                    $scoreBoard = "Deuce";
                     break;
             }
-        } elseif ($this->m_score1 >= 4 || $this->m_score2 >= 4) {
-            $minusResult = $this->m_score1 - $this->m_score2;
+        } elseif ($this->player1Score >= 4 || $this->player2Score >= 4) {
+            $minusResult = $this->player1Score - $this->player2Score;
             if ($minusResult == 1) {
-                $score = "Advantage player1";
+                $scoreBoard = "Advantage player1";
             } elseif ($minusResult == -1) {
-                $score = "Advantage player2";
+                $scoreBoard = "Advantage player2";
             } elseif ($minusResult >= 2) {
-                $score = "Win for player1";
+                $scoreBoard = "Win for player1";
             } else {
-                $score = "Win for player2";
+                $scoreBoard = "Win for player2";
             }
         } else {
-            for ($i = 1; $i < 3; $i++) {
-                if ($i == 1) {
-                    $tempScore = $this->m_score1;
+            for ($currentPlayer = 1; $currentPlayer < 3; $currentPlayer++) {
+                if ($currentPlayer == 1) {
+                    $tempScore = $this->player1Score;
                 } else {
-                    $score .= "-";
-                    $tempScore = $this->m_score2;
+                    $scoreBoard .= "-";
+                    $tempScore = $this->player2Score;
                 }
                 switch ($tempScore) {
                     case 0:
-                        $score .= "Love";
+                        $scoreBoard .= "Love";
                         break;
                     case 1:
-                        $score .= "Fifteen";
+                        $scoreBoard .= "Fifteen";
                         break;
                     case 2:
-                        $score .= "Thirty";
+                        $scoreBoard .= "Thirty";
                         break;
                     case 3:
-                        $score .= "Forty";
+                        $scoreBoard .= "Forty";
                         break;
                 }
             }
         }
-        return $score;
+        return $scoreBoard;
+    }
+
+    private function isPlayerOne(String $playerName) : bool
+    {
+        return $playerName === $this->player1Name;
     }
 }
 
